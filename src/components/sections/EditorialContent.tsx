@@ -141,7 +141,7 @@ export const EditorialContent = ({
   return (
     <div ref={container}>
       {/* Services Section */}
-      <section className="relative py-48 px-6 bg-surface-container-lowest overflow-hidden">
+      <section id="services" className="relative py-48 px-6 bg-surface-container-lowest overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full z-0 opacity-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="w-full h-full object-cover" alt="architectural portrait" src="/assets/skills-bg.png" />
@@ -199,7 +199,7 @@ export const EditorialContent = ({
       </section>
 
       {/* Stats Section */}
-      <section className="py-48 px-6 bg-white text-black relative overflow-hidden ">
+      <section id="about" className="py-48 px-6 bg-white text-black relative overflow-hidden ">
         <div className="max-w-[1600px] mx-auto grid grid-cols-12">
           <div className="col-span-12 md:col-span-10">
             <h2 className="text-[15vw] min-[768px]:text-[6vw]  min-[375px]:text-[11vw] headline-condensed leading-[0.9] mb-32">
@@ -238,7 +238,7 @@ export const EditorialContent = ({
           <div className="col-span-12 md:col-start-5 md:col-span-8 space-y-48">
             {testimonialsData.map((testimonial, i) => (
               <div key={testimonial.id} className={`testimonial-item relative editorial-overlap ${i % 2 !== 0 ? "md:-ml-24" : ""}`}>
-                <blockquote className="text-[2rem] max-w-[18rem] min-[375px]:max-w-[22rem] min-[425px]:text-[2.5rem] min-[425px]:max-w-[24rem] sm:text-3xl sm:max-w-4xl md:text-6xl headline-condensed leading-tight mb-16">
+                <blockquote className="text-[2rem] max-w-[18.5rem] min-[375px]:max-w-[22rem] min-[425px]:text-[2.5rem] min-[425px]:max-w-[24rem] sm:text-3xl sm:max-w-4xl md:text-6xl headline-condensed leading-tight mb-16">
                   &quot;{testimonial.quote}&quot;
                 </blockquote>
                 <div className="flex items-center gap-8">
@@ -258,7 +258,7 @@ export const EditorialContent = ({
       </section>
 
       {/* FAQ Section */}
-      <section className="py-48 px-6 bg-white text-black">
+      <section id="faq" className="py-48 px-6 bg-white text-black">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-9xl md:text-[15rem] headline-condensed text-center mb-32">Q&amp;A</h2>
           <Accordion className="w-full border-t border-black/10">
@@ -277,7 +277,7 @@ export const EditorialContent = ({
       </section>
 
       {/* Contact Section */}
-      <section className="relative min-h-screen py-48 px-6 overflow-hidden flex items-center">
+      <section id="contact" className="relative min-h-screen py-48 px-6 overflow-hidden flex items-center">
         <div className="absolute inset-0 z-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="w-full h-full object-cover grayscale brightness-[0.15]" alt="contact background" src="/assets/skills-bg.png" />
