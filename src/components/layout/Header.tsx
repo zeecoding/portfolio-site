@@ -10,6 +10,7 @@ import { useGSAP } from "@gsap/react";
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -28,15 +29,17 @@ export const Header = () => {
         top: "20px",
         borderRadius: "100px",
         padding: "0 20px",
-        duration: 0.8,
-        ease: "expo.out",
-        boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)",
+        borderColor: "rgba(255, 255, 255, 0.1)",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        duration: 1.2,
+        ease: "power4.inOut",
+        boxShadow: "0 20px 40px -15px rgba(0,0,0,0.7)",
       });
       gsap.to(containerRef.current, {
-        paddingTop: "12px",
-        paddingBottom: "12px",
-        duration: 0.8,
-        ease: "expo.out",
+        paddingTop: "14px",
+        paddingBottom: "14px",
+        duration: 1.2,
+        ease: "power4.inOut",
       });
     } else {
       gsap.to(headerRef.current, {
@@ -44,23 +47,27 @@ export const Header = () => {
         top: "0px",
         borderRadius: "0px",
         padding: "0 0px",
-        duration: 0.8,
-        ease: "expo.out",
+        borderColor: "transparent",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        duration: 1.2,
+        ease: "power4.inOut",
         boxShadow: "0 0px 0px rgba(0,0,0,0)",
       });
       gsap.to(containerRef.current, {
         paddingTop: "24px",
         paddingBottom: "24px",
-        duration: 0.8,
-        ease: "expo.out",
+        duration: 1.2,
+        ease: "power4.inOut",
       });
     }
   }, [isScrolled]);
 
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <nav 
       ref={headerRef}
-      className="fixed left-1/2 -translate-x-1/2 z-[100] bg-surface/40 backdrop-blur-xl border border-white/10 overflow-hidden"
+      className="fixed left-1/2 -translate-x-1/2 z-[100] backdrop-blur-xl border border-transparent overflow-hidden"
     >
       <div 
         ref={containerRef}
@@ -84,7 +91,7 @@ export const Header = () => {
         
         {/* Mobile menu */}
         <div className="lg:hidden flex items-center">
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger className="text-on-surface hover:text-primary p-2">
               <Menu className="h-8 w-8" />
               <span className="sr-only">Toggle menu</span>
@@ -93,13 +100,13 @@ export const Header = () => {
               <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
               <SheetDescription className="sr-only">Navigation links for mobile devices</SheetDescription>
               <div className="flex flex-col items-center gap-10">
-                <Link className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#portfolio">Work</Link>
-                <Link className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#services">Services</Link>
-                <Link className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#about">About</Link>
-                <Link className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#faq">FAQ</Link>
-                <Link className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#contact">Contact</Link>
+                <Link onClick={closeMobileMenu} className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#portfolio">Work</Link>
+                <Link onClick={closeMobileMenu} className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#services">Services</Link>
+                <Link onClick={closeMobileMenu} className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#about">About</Link>
+                <Link onClick={closeMobileMenu} className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#faq">FAQ</Link>
+                <Link onClick={closeMobileMenu} className="text-on-surface font-black headline-condensed text-4xl hover:text-primary transition-all" href="#contact">Contact</Link>
               </div>
-              <Button className="rounded-full px-12 py-8 mt-4 font-black headline-condensed text-2xl hover:bg-white hover:text-black transition-all cursor-pointer">
+              <Button onClick={closeMobileMenu} className="rounded-full px-12 py-8 mt-4 font-black headline-condensed text-2xl hover:bg-white hover:text-black transition-all cursor-pointer">
                 Hire Me
               </Button>
             </SheetContent>
