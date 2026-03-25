@@ -13,6 +13,7 @@ export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +24,27 @@ export const Header = () => {
   }, []);
 
   useGSAP(() => {
+    // Prevent animation on initial page load
+    if (isFirstRender.current) {
+      if (!isScrolled) {
+        gsap.set(headerRef.current, {
+          width: "100%",
+          top: "0px",
+          borderRadius: "0px",
+          padding: "0 0px",
+          borderColor: "transparent",
+          backgroundColor: "#131313", // Match hero bg-surface
+          boxShadow: "0 0px 0px rgba(0,0,0,0)",
+        });
+        gsap.set(containerRef.current, {
+          paddingTop: "24px",
+          paddingBottom: "24px",
+        });
+      }
+      isFirstRender.current = false;
+      return;
+    }
+
     if (isScrolled) {
       gsap.to(headerRef.current, {
         width: "90%",
@@ -30,7 +52,7 @@ export const Header = () => {
         borderRadius: "100px",
         padding: "0 20px",
         borderColor: "rgba(255, 255, 255, 0.1)",
-        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        backgroundColor: "rgba(19, 19, 19, 0.6)",
         duration: 1.2,
         ease: "power4.inOut",
         boxShadow: "0 20px 40px -15px rgba(0,0,0,0.7)",
@@ -48,7 +70,7 @@ export const Header = () => {
         borderRadius: "0px",
         padding: "0 0px",
         borderColor: "transparent",
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        backgroundColor: "#131313",
         duration: 1.2,
         ease: "power4.inOut",
         boxShadow: "0 0px 0px rgba(0,0,0,0)",
@@ -68,6 +90,7 @@ export const Header = () => {
     <nav 
       ref={headerRef}
       className="fixed left-1/2 -translate-x-1/2 z-[100] backdrop-blur-xl border border-transparent overflow-hidden"
+      style={{ backgroundColor: "#131313" }} // Default initial state
     >
       <div 
         ref={containerRef}
