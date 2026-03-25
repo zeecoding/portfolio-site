@@ -202,7 +202,7 @@ export const EditorialContent = ({
       <section className="py-48 px-6 bg-white text-black relative overflow-hidden ">
         <div className="max-w-[1600px] mx-auto grid grid-cols-12">
           <div className="col-span-12 md:col-span-10">
-            <h2 className="min-[768px]:text-[6vw]  min-[375px]:text-[11vw] headline-condensed leading-[0.9] mb-32">
+            <h2 className="text-[15vw] min-[768px]:text-[6vw]  min-[375px]:text-[11vw] headline-condensed leading-[0.9] mb-32">
               UI/UX Designer crafting intuitive, user-friendly experiences through{" "}
               <span className="text-primary italic">wireframing</span>,{" "}
               <span className="text-secondary italic">prototyping</span>, & visual design.
@@ -291,7 +291,7 @@ export const EditorialContent = ({
               <p>{contactData.location}</p>
             </div>
           </div>
-          <div className="col-span-7 col-start-1 left-[-8px] min-[375px]:col-span-8 min-[375px]:col-start-1 min-[425px]:col-span-9 min-[425px]:col-start-1 md:col-span-12 md:col-start-1 md:ml-0 lg:col-span-5 lg:col-start-auto lg:-ml-24 editorial-overlap">
+          <div className="col-span-8 col-start-1 left-[-8px] min-[375px]:col-span-8 min-[375px]:col-start-1 min-[425px]:col-span-9 min-[425px]:col-start-1 md:col-span-12 md:col-start-1 md:ml-0 lg:col-span-5 lg:col-start-auto lg:-ml-24 editorial-overlap">
             <div className="bg-white p-8 sm:p-12 md:p-20 rounded-[2rem] sm:rounded-[3rem] text-surface">
               <h3 className="text-5xl sm:text-6xl headline-condensed mb-8 sm:mb-16">Let&apos;s Talk</h3>
               <form className="space-y-8 sm:space-y-12">
