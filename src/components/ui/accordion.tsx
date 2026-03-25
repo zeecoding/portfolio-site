@@ -20,12 +20,14 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
       data-slot="accordion-item"
       className={cn("not-last:border-b", className)}
       onMouseEnter={(e) => {
+        if (!window.matchMedia('(hover: hover)').matches) return;
         const trigger = e.currentTarget.querySelector('[data-slot="accordion-trigger"]');
         if (trigger && trigger.getAttribute('aria-expanded') !== 'true') {
           (trigger as HTMLButtonElement).click();
         }
       }}
       onMouseLeave={(e) => {
+        if (!window.matchMedia('(hover: hover)').matches) return;
         const trigger = e.currentTarget.querySelector('[data-slot="accordion-trigger"]');
         if (trigger && trigger.getAttribute('aria-expanded') === 'true') {
           (trigger as HTMLButtonElement).click();

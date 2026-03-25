@@ -22,7 +22,7 @@ export const HeroSection = ({ heroData }: HeroSectionProps) => {
 
     // Initial states for animation bounds
     gsap.set(".hero-title-line", { yPercent: 120, autoAlpha: 0, rotateX: 20 });
-    gsap.set(".hero-image", { scale: 1.3, autoAlpha: 0, filter: "blur(20px)" });
+    gsap.set(".hero-image", { scale: 1.3, autoAlpha: 0, filter: "grayscale(100%) blur(20px)" });
     gsap.set(".hero-fade-up", { y: 60, autoAlpha: 0 });
 
     tl.to(".hero-image", {
