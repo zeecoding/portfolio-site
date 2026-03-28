@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -31,6 +31,42 @@ export const EditorialContent = ({
 }: EditorialContentProps) => {
   const container = useRef<HTMLDivElement>(null);
   const magneticButton = useRef<HTMLButtonElement>(null);
+
+  // Contact form state
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formMessage, setFormMessage] = useState("");
+  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus("sending");
+    setFormError(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: formName, email: formEmail, message: formMessage }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setFormError(data.error ?? "Something went wrong. Please try again.");
+        setFormStatus("error");
+      } else {
+        setFormStatus("success");
+        setFormName("");
+        setFormEmail("");
+        setFormMessage("");
+      }
+    } catch {
+      setFormError("Something went wrong. Please try again.");
+      setFormStatus("error");
+    }
+  };
 
   useGSAP(() => {
     // 1. Service Cards Reveal
@@ -294,32 +330,69 @@ export const EditorialContent = ({
           <div className="col-span-8 col-start-1 left-[-8px] min-[375px]:col-span-8 min-[375px]:col-start-1 min-[425px]:col-span-9 min-[425px]:col-start-1 md:col-span-12 md:col-start-1 md:ml-0 lg:col-span-5 lg:col-start-auto lg:-ml-24 editorial-overlap">
             <div className="bg-white p-8 sm:p-12 md:p-20 rounded-[2rem] sm:rounded-[3rem] text-surface">
               <h3 className="text-5xl sm:text-6xl headline-condensed mb-8 sm:mb-16">Let&apos;s Talk</h3>
-              <form className="space-y-8 sm:space-y-12">
-                <div className="relative">
-                  <Input
-                    className="w-full border-0 border-b-2 border-black/10 py-4 sm:py-8 px-0 rounded-none focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-black/30 headline-condensed text-2xl sm:text-3xl bg-transparent"
-                    placeholder="Full Name"
-                    type="text"
-                  />
+              {formStatus === "success" ? (
+                <div className="py-16 text-center space-y-4">
+                  <span className="material-symbols-outlined text-6xl text-green-500">check_circle</span>
+                  <p className="headline-condensed text-3xl text-surface">Message sent!</p>
+                  <p className="elegant-body text-surface/60">I&apos;ll get back to you soon.</p>
+                  <button
+                    onClick={() => setFormStatus("idle")}
+                    className="mt-8 underline elegant-body text-surface/50 hover:text-surface transition-colors cursor-pointer"
+                  >
+                    Send another message
+                  </button>
                 </div>
-                <div className="relative">
-                  <Input
-                    className="w-full border-0 border-b-2 border-black/10 py-4 sm:py-8 px-0 rounded-none focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-black/30 headline-condensed text-2xl sm:text-3xl bg-transparent"
-                    placeholder="Email"
-                    type="email"
-                  />
-                </div>
-                <div className="relative">
-                  <Textarea
-                    className="w-full border-0 border-b-2 border-black/10 py-4 px-0 rounded-none focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-black/30 headline-condensed text-2xl sm:text-3xl bg-transparent resize-none min-h-[100px] sm:min-h-[120px]"
-                    placeholder="Your Message"
-                    rows={3}
-                  />
-                </div>
-                <button ref={magneticButton} type="button" className="w-full bg-primary text-white py-6 sm:py-10 rounded-full headline-condensed tracking-[0.2em] sm:tracking-[0.4em] text-xl sm:text-2xl hover:bg-black transition-all shadow-2xl cursor-pointer">
-                  Send Inquiry
-                </button>
-              </form>
+              ) : (
+                <form onSubmit={handleContactSubmit} className="space-y-8 sm:space-y-12">
+                  <div className="relative">
+                    <Input
+                      className="w-full border-0 border-b-2 border-black/10 py-4 sm:py-8 px-0 rounded-none focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-black/30 headline-condensed text-2xl sm:text-3xl bg-transparent"
+                      placeholder="Full Name"
+                      type="text"
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      maxLength={100}
+                      required
+                      disabled={formStatus === "sending"}
+                    />
+                  </div>
+                  <div className="relative">
+                    <Input
+                      className="w-full border-0 border-b-2 border-black/10 py-4 sm:py-8 px-0 rounded-none focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-black/30 headline-condensed text-2xl sm:text-3xl bg-transparent"
+                      placeholder="Email"
+                      type="email"
+                      value={formEmail}
+                      onChange={(e) => setFormEmail(e.target.value)}
+                      maxLength={254}
+                      required
+                      disabled={formStatus === "sending"}
+                    />
+                  </div>
+                  <div className="relative">
+                    <Textarea
+                      className="w-full border-0 border-b-2 border-black/10 py-4 px-0 rounded-none focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-black/30 headline-condensed text-2xl sm:text-3xl bg-transparent resize-none min-h-[100px] sm:min-h-[120px]"
+                      placeholder="Your Message"
+                      rows={3}
+                      value={formMessage}
+                      onChange={(e) => setFormMessage(e.target.value)}
+                      maxLength={2000}
+                      required
+                      disabled={formStatus === "sending"}
+                    />
+                  </div>
+                  {formError && (
+                    <p className="elegant-body text-red-500 text-sm">{formError}</p>
+                  )}
+                  <button
+                    ref={magneticButton}
+                    type="submit"
+                    disabled={formStatus === "sending"}
+                    className="w-full bg-primary text-white py-6 sm:py-10 rounded-full headline-condensed tracking-[0.2em] sm:tracking-[0.4em] text-xl sm:text-2xl hover:bg-black transition-all shadow-2xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {formStatus === "sending" ? "Sending..." : "Send Inquiry"}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

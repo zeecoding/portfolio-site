@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -9,92 +9,95 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 export const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+  // useState ONLY for the mobile Sheet (React needs to own this for the controlled component)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // useRef for scroll state — zero re-renders
+  const isScrolledRef = useRef(false);
   const headerRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useGSAP(() => {
-    // Prevent animation on initial page load
-    if (isFirstRender.current) {
-      if (!isScrolled) {
-        gsap.set(headerRef.current, {
+    // ── GSAP owns all animated properties from first paint ──
+    gsap.set(headerRef.current, {
+      width: "100%",
+      top: "0px",
+      borderRadius: "0px",
+      padding: "0 0px",
+      borderColor: "transparent",
+      backgroundColor: "#131313",
+      boxShadow: "0 0px 0px rgba(0,0,0,0)",
+    });
+    gsap.set(containerRef.current, {
+      paddingTop: "24px",
+      paddingBottom: "24px",
+    });
+
+    // ── Scroll listener lives inside useGSAP — no external useEffect ──
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 50;
+
+      // Change guard: only fire GSAP when threshold actually changes
+      if (scrolled === isScrolledRef.current) return;
+      isScrolledRef.current = scrolled;
+
+      if (scrolled) {
+        gsap.to(headerRef.current, {
+          width: "90%",
+          top: "20px",
+          borderRadius: "100px",
+          padding: "0 20px",
+          borderColor: "rgba(255, 255, 255, 0.1)",
+          backgroundColor: "rgba(19, 19, 19, 0.6)",
+          duration: 1.2,
+          ease: "power4.inOut",
+          boxShadow: "0 20px 40px -15px rgba(0,0,0,0.7)",
+          overwrite: "auto",
+        });
+        gsap.to(containerRef.current, {
+          paddingTop: "14px",
+          paddingBottom: "14px",
+          duration: 1.2,
+          ease: "power4.inOut",
+          overwrite: "auto",
+        });
+      } else {
+        gsap.to(headerRef.current, {
           width: "100%",
           top: "0px",
           borderRadius: "0px",
           padding: "0 0px",
           borderColor: "transparent",
-          backgroundColor: "#131313", // Match hero bg-surface
+          backgroundColor: "#131313",
+          duration: 1.2,
+          ease: "power4.inOut",
           boxShadow: "0 0px 0px rgba(0,0,0,0)",
+          overwrite: "auto",
         });
-        gsap.set(containerRef.current, {
+        gsap.to(containerRef.current, {
           paddingTop: "24px",
           paddingBottom: "24px",
+          duration: 1.2,
+          ease: "power4.inOut",
+          overwrite: "auto",
         });
       }
-      isFirstRender.current = false;
-      return;
-    }
+    };
 
-    if (isScrolled) {
-      gsap.to(headerRef.current, {
-        width: "90%",
-        top: "20px",
-        borderRadius: "100px",
-        padding: "0 20px",
-        borderColor: "rgba(255, 255, 255, 0.1)",
-        backgroundColor: "rgba(19, 19, 19, 0.6)",
-        duration: 1.2,
-        ease: "power4.inOut",
-        boxShadow: "0 20px 40px -15px rgba(0,0,0,0.7)",
-      });
-      gsap.to(containerRef.current, {
-        paddingTop: "14px",
-        paddingBottom: "14px",
-        duration: 1.2,
-        ease: "power4.inOut",
-      });
-    } else {
-      gsap.to(headerRef.current, {
-        width: "100%",
-        top: "0px",
-        borderRadius: "0px",
-        padding: "0 0px",
-        borderColor: "transparent",
-        backgroundColor: "#131313",
-        duration: 1.2,
-        ease: "power4.inOut",
-        boxShadow: "0 0px 0px rgba(0,0,0,0)",
-      });
-      gsap.to(containerRef.current, {
-        paddingTop: "24px",
-        paddingBottom: "24px",
-        duration: 1.2,
-        ease: "power4.inOut",
-      });
-    }
-  }, [isScrolled]);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []); // Empty dependency array — runs once, never re-registers
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <nav 
+    <nav
       ref={headerRef}
-      className="fixed left-1/2 -translate-x-1/2 z-[100] backdrop-blur-xl border border-transparent overflow-hidden"
-      style={{ backgroundColor: "#131313" }} // Default initial state
+      className="fixed left-1/2 -translate-x-1/2 z-[100] backdrop-blur-xl border border-transparent"
     >
-      <div 
+      <div
         ref={containerRef}
-        className="flex justify-between items-center px-6 md:px-12 py-6 max-w-[1920px] mx-auto transition-all"
+        className="flex justify-between items-center px-6 md:px-12 py-6 max-w-[1920px] mx-auto"
       >
         <Link href="/" className="text-2xl md:text-3xl headline-condensed text-on-surface hover:text-primary transition-colors">
           KINETIC CURATOR
@@ -111,7 +114,7 @@ export const Header = () => {
             Hire Me
           </Button>
         </div>
-        
+
         {/* Mobile menu */}
         <div className="lg:hidden flex items-center">
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
